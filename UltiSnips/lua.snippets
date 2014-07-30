@@ -1,0 +1,68 @@
+snippet "^#!" "shebang header" br
+#!/usr/bin/env lua
+$0
+endsnippet
+
+snippet if "if .. end" b
+if ${1:condition} then
+	${VISUAL}$0
+end
+endsnippet
+
+snippet ife "if .. else .. end" b
+if ${1:condition} then
+	${VISUAL}$2
+else
+	$0
+end
+endsnippet
+
+snippet ifee "if .. elseif .. else .. end" b
+if ${1:condition} then
+	${VISUAL}$2
+elseif ${3:condition} then
+	$4
+else
+	$0
+end
+endsnippet
+
+snippet var "<varname> = <value>" b
+${1:local }${2:name} = ${3:value}
+endsnippet
+
+snippet fun "function .. end" b
+${1:local }function ${2:name}($3)
+	${VISUAL}$0
+end
+endsnippet
+
+snippet for "for .. do .. end"
+for ${1:i} = ${2:first},${3:last}${4/^..*/(?0:,:)/}${4:step} do
+	${VISUAL}$0
+end
+endsnippet
+
+snippet forp "for .. in pairs(..) do .. end" b
+for ${1:name}, ${2:val} in pairs(${3:table_name}) do
+	${VISUAL}$0
+end
+endsnippet
+
+snippet fori "for .. in ipairs(..) do .. end" b
+for ${1:name}, ${2:val} in ipairs(${3:table_name}) do
+	${VISUAL}$0
+end
+endsnippet
+
+snippet wh "while .. do .. end" b
+while ${1:condition} do
+	${VISUAL}$0
+end
+endsnippet
+
+snippet rep "repeat .. until .." b
+repeat
+	${VISUAL}$0
+ultil ${1:condition}
+endsnippet

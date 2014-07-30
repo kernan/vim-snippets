@@ -1,0 +1,44 @@
+global !p
+def get_args(group):
+	import re
+	word = re.compile('[a-zA-Z><.]+ \w+')
+	return [i.split(" ") for i in word.findall(group) ]
+
+# FIXME(2014-07-30) This is just a placeholder for proper camel_case/snake_case
+# conversion functions.
+def camel_case(word):
+	if not word:
+		return ''
+	return word[0].upper() + word[1:]
+endglobal
+
+# TODO(2014-07-30) Convert names to CamelCase.
+# TODO(2014-07-30) Use new Args class.
+# TODO(2014-07-30) Add documentation.
+snippet cl "class" b
+${1:public} class `!p
+snip.rv = snip.basename or "untitled"`${2: extends ${3:Class}}${4: implements ${5:Interface}} {`!p
+args = get_args(t[6])
+if len(args) == 0: snip.rv = ""
+for i in args:
+	snip.rv += "\n\tprivate " + i[0] + " " + i[1]+ ";"
+if len(args) > 0:
+	snip.rv += "\n"`
+	public `!p snip.rv = snip.basename or "unknown"`($6) { `!p
+args = get_args(t[6])
+for i in args:
+	snip.rv += "\n\t\tthis." + i[1] + " = " + i[1] + ";"
+if len(args) == 0:
+	snip.rv += "\n"`
+	}$0
+`!p
+args = get_args(t[6])
+if len(args) == 0: snip.rv = ""
+for i in args:
+	snip.rv += "\n\tpublic void set" + camel_case(i[1]) + "(" + i[0] + " " + i[1] + ") {\n" + "\
+	\tthis." + i[1] + " = " + i[1] + ";\n\t}\n"
+
+	snip.rv += "\n\tpublic " + i[0] + " get" + camel_case(i[1]) + "() {\n\t\treturn " + i[1] + ";\n\t}\n"
+`
+}
+endsnippet

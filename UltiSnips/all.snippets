@@ -1,0 +1,34 @@
+global !p
+import vim
+
+def __get_commentstring():
+	return vim.eval('&commentstring').replace('%s', ' {0} ').rstrip()
+
+def open_comment():
+	""" Creates a comment from the given string. """
+	return __get_commentstring().split('{0}', 1)[0]
+
+def close_comment():
+	""" Closes a comment. Should always be called after mk_comment. """
+	return __get_commentstring().split('{0}', 1)[1]
+endglobal
+
+snippet date
+`!p import time; snip.rv = time.strftime("%Y-%m-%d")`
+endsnippet
+
+snippet time
+`!p import time; snip.rv = time.strftime("%H:%M")`
+endsnippet
+
+snippet datetime
+`!p import time; snip.rv = time.strftime("%Y-%m-%d %H:%M")`
+endsnippet
+
+snippet todo "todo"
+`!p import time; snip.rv = open_comment() + "TODO(" + time.strftime("%Y-%m-%d") + ")"` $0`!p snip.rv = close_comment()`
+endsnippet
+
+snippet fixme "fixme"
+`!p import time; snip.rv = open_comment() + "FIXME(" + time.strftime("%Y-%m-%d") + ")"` $0`!p snip.rv = close_comment()`
+endsnippet
