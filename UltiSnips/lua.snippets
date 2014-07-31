@@ -4,35 +4,35 @@ $0
 endsnippet
 
 snippet if "if .. end" b
-if ${1:condition} then
-	${VISUAL}$0
+if $1 then
+	${VISUAL}$2
 end
 endsnippet
 
 snippet ife "if .. else .. end" b
-if ${1:condition} then
+if $1 then
 	${VISUAL}$2
 else
-	$0
+	$3
 end
 endsnippet
 
 snippet ifee "if .. elseif .. else .. end" b
-if ${1:condition} then
+if $1 then
 	${VISUAL}$2
-elseif ${3:condition} then
+elseif ${3} then
 	$4
 else
-	$0
+	$5
 end
 endsnippet
 
 snippet var "<varname> = <value>" b
-${1:local }${2:name} = ${3:value}
+${1:local }$2 = $3
 endsnippet
 
 snippet fun "function .. end" b
-${1:local }function ${2:name}($3)
+${1:local }function $2($3)
 	${VISUAL}$0
 end
 endsnippet
@@ -56,7 +56,7 @@ end
 endsnippet
 
 snippet wh "while .. do .. end" b
-while ${1:condition} do
+while $1 do
 	${VISUAL}$0
 end
 endsnippet
@@ -64,5 +64,5 @@ endsnippet
 snippet rep "repeat .. until .." b
 repeat
 	${VISUAL}$0
-ultil ${1:condition}
+ultil $1
 endsnippet

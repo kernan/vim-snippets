@@ -1,63 +1,74 @@
 priority 50
 
+global !p
+
+from arg import Arg
+import text
+
+def write_initialize_body(args, snip):
+	for arg in args:
+		snip += '@{0} = {0}'.format(arg.name).strip()
+
+endglobal
+
 snippet "^#!" "shebang header" br
 #!/usr/bin/env ruby
 $0
 endsnippet
 
 snippet If ".. if .."
-${1:command} if ${0:expression}
+$1 if $0
 endsnippet
 
 snippet Unless ".. unless .."
-${1:command} unless ${0:expression}
+$1 unless $0
 endsnippet
 
 snippet if "if .. end" b
-if ${1:condition}:
+if $1
 	${VISUAL}$0
 end
 endsnippet
 
 snippet ife "if .. else .. end" b
-if ${1:condition}:
+if $1
 	${VISUAL}$2
 else
-	${VISUAL}$3
+	$3
 end
 endsnippet
 
 snippet ifee "if .. elsif .. else .. end" b
-if ${1:condition}
+if $1
 	${VISUAL}$2
-elsif ${3:condition}
-	${VISUAL}$4
+elsif $3
+	$4
 else
-	${VISUAL}$5
+	$5
 end
 endsnippet
 
 snippet unl "unless .. end" b
-unless ${1:condition}
+unless $1
 	${VISUAL}$2
 end
 endsnippet
 
 snippet unle "unless .. else .. end" b
-unless ${1:condition}
+unless $1
 	${VISUAL}$2
 else
-	${VISUAL}$3
+	$3
 end
 endsnippet
 
 snippet unlee "unless .. else .. elsif .. end" b
-unless ${1:condition}
+unless $1
 	${VISUAL}$2
 elsif ${3:condition}
-	${VISUAL}$4
+	$4
 else
-	${VISUAL}$5
+	$5
 end
 endsnippet
 
@@ -71,8 +82,36 @@ snippet for "(..).each do .. end"
 end
 endsnippet
 
-snippet def "def function .." b
-def ${1:function_name}${2:(${3:*args})}
+snippet do "do .. end"
+do${1: |$2|}
 	${VISUAL}$0
+end
+endsnippet
+
+snippet unt "until .. end"
+until $1
+	${VISUAL}$0
+end
+endsnippet
+
+snippet wh "while .. end"
+while $1
+	${VISUAL}$0
+end
+endsnippet
+
+snippet def "def function .." b
+def $1${2:($3)}
+	${VISUAL}$0
+end
+endsnippet
+
+snippet cl "class .."
+class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`}
+	def initialize($2)`!p
+snip >> 2
+args = Arg.get_args(t[2])
+write_initialize_body(args, snip)`
+	end$0
 end
 endsnippet

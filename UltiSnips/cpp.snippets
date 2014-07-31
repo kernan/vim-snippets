@@ -2,40 +2,120 @@ extends c
 
 priority 49
 
+global !p
+
+from arg import TypeArg
+import text
+
+class CppTypeArg(TypeArg):
+	def __init__(self, arg):
+		super(CppTypeArg, self).__init__(arg)
+		self.passed_as_reference = False
+		if len(self.type) > 0 and self.type[-1] == '&':
+			self.passed_as_reference = True
+			self.type = self.type[0:-1]
+		self.type = self.type.replace('const', '') # remove const
+		self.type = self.type.strip()
+		self.pointer_on_name = False
+		if len(self.name) > 0 and self.name[0] == '*':
+			self.pointer_on_name = True
+			self.name = self.name[1:] # remove ptr
+
+	def full_name(self):
+		if self.pointer_on_name:
+			return '*' + self.name
+		else:
+			return self.name
+
+	@staticmethod
+	def get_args(arglist):
+		args = [CppTypeArg(arg) for arg in arglist.split(',') if arg]
+		args = [arg for arg in args if arg.arg != 'void']
+		return args
+
+def write_members(args, snip):
+	for arg in args:
+		snip += '{0} {1};'.format(arg.type, arg.full_name()).strip()
+
+def write_getter(arg, snip):
+	snip += ''
+	snip += 'inline ' \
+		+ '{0} {1}{2}'.format(arg.type, '*' if arg.pointer_on_name else '', text.to_snake('get_' + arg.name)).strip() \
+		+ '(void) const {'
+	snip >> 1
+	snip += 'return this->' + '{0}'.format(arg.name).strip() + ';'
+	snip << 1
+	snip += '}'
+
+def write_setter(arg, snip):
+	snip += ''
+	snip += 'inline void ' \
+		+ '{0}(const {1}{2} {3}{4}'.format( \
+			text.to_snake('set_' + arg.name), \
+			arg.type, \
+			'&' if arg.passed_as_reference else '', \
+			'*' if arg.pointer_on_name else '', \
+			arg.name).strip() \
+		+ ') {'
+	snip >> 1
+	snip += 'this->' + '{0} = {0}'.format(arg.name).strip() + ';'
+	snip << 1
+	snip += '}'
+
+endglobal
+
 snippet cl "class .." b
-class ${1:`!p snip.rv = snip.basename or "name"`} {
+class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`} {
 public:
-	${1/(\w+).*/$1/}(${2:void});
-	virtual ~${1/(\w+).*/$1/}(void);
+	$1(${2:void});
+	virtual ~$1(void) = default;
 private:
 	$0
+}
+endsnippet
+
+snippet clc "class .. (automated)" b
+class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`} {
+public:
+	$1(${2:void});
+	virtual ~$1(void) = default;`!p
+snip >> 1
+args = CppTypeArg.get_args(t[2])
+for arg in args:
+	write_getter(arg, snip)
+	write_setter(arg, snip)`
+private:`!p
+snip >> 1
+snip.rv = ''
+args = CppTypeArg.get_args(t[2])
+write_members(args, snip)`$0
 };
 endsnippet
 
 snippet met "class::method"
-${3:void} ${1:class}::${2:method}(${4:void}) {
+${3:void} ${1}::${2}(${4:void}) {
 	${VISUAL}$0
 }
 endsnippet
 
 snippet tp "template<..>"
-template<${1:typename ${2:type}}>$0
+template<${1:typename} ${2}>
 endsnippet
 
 snippet ns "namespace .."
-namespace${1/.+/ /m}${1:`!p snip.rv = (snip.basename or "name")`} {
+namespace ${1:`!p snip.rv = (snip.basename or "unnamed")`} {
 
 ${VISUAL}$0
 
 }
 endsnippet
 
-snippet enum "enum class .."
-enum class ${1:name} { $0 };
+snippet enumc "enum class .."
+enum class ${1} { $0 };
 endsnippet
 
 snippet fore "for each"
-for (${1:auto}& ${2:element} : ${3:list}) {
+for (${1:auto}& ${2} : ${3}) {
 	${VISUAL}$0
 }
 endsnippet

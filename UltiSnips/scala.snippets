@@ -1,0 +1,77 @@
+snippet if "if .." b
+if ($1) {
+	${VISUAL}$2
+}
+endsnippet
+
+snippet ife "if .. else .." b
+if ($1) {
+	${VISUAL}$2
+} else {
+	$3
+}
+endsnippet
+
+snippet ifee "if .. else if .. else" b
+if ($1) {
+	${VISUAL}$2
+} else if ($3) {
+	$4
+} else {
+	$5
+}
+endsnippet
+
+snippet wh "while .." b
+while ($1) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet do "do .. while .." b
+do {
+	${VISUAL}$0
+} while ($1)
+endsnippet
+
+snippet for "for .. <- .." b
+for ($1 <- $2) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet forto "for .. <- .. to .." b
+for ($1 <- $2 to $3) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet forun "for .. <- .. until .." b
+for ($1 <- $2 until $3) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet try "try .. catch .. finally" b
+try {
+	${VISUAL}$1
+} catch {
+	$2
+} finally {
+	$3
+}
+endsnippet
+
+snippet main "main" b
+def main(args: Array[String]) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet app "application" b
+object $1 extends Application {
+	${VISUAL}$0
+}
+endsnippet
+
+# TODO(2014-07-31) Add methods, args, objects, and classes.

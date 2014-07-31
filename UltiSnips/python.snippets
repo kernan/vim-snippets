@@ -1,6 +1,7 @@
 global !p
 
 from arg import Arg
+import text
 
 class PyArg(Arg):
 	def __init__(self, arg):
@@ -13,19 +14,9 @@ class PyArg(Arg):
 		args = [arg for arg in args if arg.name != 'self']
 		return args
 
-def write_init_body(args, parents, snip):
-	parents = [p.strip() for p in parents.split(",")]
-	parents = [p for p in parents if p != 'object']
-
-	for p in parents:
-		snip += "super(" + p + ", self).__init__()"
-
+def write_init_body(args, snip):
 	for arg in args:
-		snip += "self.{0} = {0}".format(arg.name)
-
-def write_slots_args(args, snip):
-	args = ['"_{0}"'.format(arg) for arg in args]
-	snip += '__slots__ = ({0},)'.format(', '.join(args))
+		snip += 'self.' + '{0} = {0}'.format(arg.name).strip()
 
 endglobal
 
@@ -40,43 +31,43 @@ if __name__ == '__main__':
 endsnippet
 
 snippet imp "import .." b
-import ${0:module}
+import $0
 endsnippet
 
 snippet from "from .. import .." b
-from ${1:package} import ${2:module}
+from $1 import $2
 endsnippet
 
 snippet wh "while .." b
-while ${1:condition}:
+while $1:
 	${0:${VISUAL:pass}}
 endsnippet
 
 snippet For "[.. for .. in ..]"
-[${1:result} for ${2:item} in ${3:list}$4]
+[$1 for $2 in $3]
 endsnippet
 
 snippet for "for .." b
-for ${1:item} in ${2:iterable}:
+for $1 in $2:
 	${0:${VISUAL:pass}}
 endsnippet
 
 snippet if "if .." b
-if ${1:condition}:
+if $1:
 	${0:${VISUAL:pass}}
 endsnippet
 
 snippet ife "if .. else" b
-if ${1:condition}:
+if $1:
 	${2:${VISUAL:pass}}
 else:
 	${3:pass}
 endsnippet
 
 snippet ifee "if .. elif .. else" b
-if ${1:condition}:
+if $1:
 	${3:${VISUAL:pass}}
-elif ${2:condition}:
+elif $2:
 	${4:pass}
 else:
 	${5:pass}
@@ -85,23 +76,23 @@ endsnippet
 snippet try "try .. except" b
 try:
 	${1:${VISUAL:pass}}
-except${2: ${3:Exception}, ${4:e}}:
+except$2:
 	${5:raise}
 endsnippet
 
-snippet try "try .. except .. else" b
+snippet trye "try .. except .. else" b
 try:
 	${1:${VISUAL:pass}}
-except${2: ${3:Exception}, ${4:e}}:
+except$2:
 	${5:raise}
 else:
 	${6:pass}
 endsnippet
 
-snippet try "try .. except .. else .. finally" b
+snippet tryef "try .. except .. else .. finally" b
 try:
 	${1:${VISUAL:pass}}
-except${2: ${3:Exception}, ${4:e}}:
+except$2:
 	${5:raise}
 else:
 	${6:pass}
@@ -109,263 +100,18 @@ finally:
 	${7:pass}
 endsnippet
 
-snippet def "function with docstrings" b
-def ${1:function}(`!p
+snippet def "def ..(..) .." b
+def $1(`!p
 if snip.indent:
-	snip.rv = 'self' + (", " if len(t[2]) else "")`${2:arg1}):
+	snip.rv = 'self' + (', ' if len(t[2]) else '')`${2}):
 	${0:${VISUAL:pass}}
 endsnippet
 
 snippet cl "class .." b
-class ${1:MyClass}(${2:object}):
-	def __init__(self$4):`!p
-snip.rv = ""
-snip.shift(2)
-args = PyArg.get_args(t[4])
-write_init_body(args, t[2], snip)`
-		$0
-endsnippet
-
-snippet roprop "Read Only Property" b
-@property
-def ${1:name}(self):
-	${2:return self._$1}$0
-endsnippet
-
-snippet rwprop "Read write property" b
-def ${1:name}():
-	`!p snip.rv = triple_quotes(snip) if t[2] else ''
-`${2:@todo: Docstring for $1.}`!p
-if t[2]:
-	snip.shift(1)
-
-	style = get_style(snip)
-	snip.rv += '\n' + snip.mkline('', indent='')
-	snip += format_return(style)
-	snip.rv += '\n' + snip.mkline('', indent='')
-	snip += triple_quotes(snip)
-else:
-	snip.rv = ""`
-	def fget(self):
-		return self._$1$0
-
-	def fset(self, value):
-		self._$1 = value
-	return locals()
-
-$1 = property(**$1(), doc=$1.__doc__)
-endsnippet
-
-snippet contain "methods for implementing a container" b
-def __len__(self):
-	${1:pass}
-
-def __getitem__(self, key):
-	${2:pass}
-
-def __setitem__(self, key, value):
-	${3:pass}
-
-def __deliterm__(self, key):
-	${4:pass}
-
-def __iter__(self):
-	${5:pass}
-
-def __reversed__(self):
-	${6:pass}
-
-def __contains__(self, item):
-	${7:pass}
-endsnippet
-
-snippet context "methods for implementing a context manager" b
-def __enter__(self):
-	${1:pass}
-
-def __exit__(self, exc_type, exc_value, traceback):
-	${2:pass}
-endsnippet
-
-snippet attr "methods for customizing attribute access" b
-def __getattr__(self, name):
-	${1:pass}
-
-def __setattr__(self, name, value):
-	${2:pass}
-
-def __delattr__(self, name):
-	${3:pass}
-endsnippet
-
-snippet desc "methods for implementing descriptors" b
-def __get__(self, instance, owner):
-	${1:pass}
-
-def __set__(self, instance, value):
-	${2:pass}
-
-def __delete__(self, instance):
-	${3:pass}
-endsnippet
-
-snippet cmp "methods for implementing rich comparison" b
-def __eq__(self, other):
-	${1:pass}
-
-def __ne__(self, other):
-	${2:pass}
-
-def __lt__(self, other):
-	${3:pass}
-
-def __le__(self, other):
-	${4:pass}
-
-def __gt__(self, other):
-	${5:pass}
-
-def __ge__(self, other):
-	${6:pass}
-
-def __cmp__(self, other):
-	${7:pass}
-endsnippet
-
-snippet repr "methods for implementing string representation" b
-def __repr__(self):
-	${1:pass}
-
-def __str__(self):
-	${2:pass}
-
-def __unicode__(self):
-	${3:pass}
-endsnippet
-
-snippet numeric "methods for implementing a numeric type" b
-def __add__(self, other):
-	${1:pass}
-
-def __sub__(self, other):
-	${2:pass}
-
-def __mul__(self, other):
-	${3:pass}
-
-def __div__(self, other):
-	${4:pass}
-
-def __truediv__(self, other):
-	${5:pass}
-
-def __floordir__(self, other):
-	${6:pass}
-
-def __mod__(self, other):
-	${7:pass}
-
-def __divmod__(self, other):
-	${8:pass}
-
-def __pow__(self, other):
-	${9:pass}
-
-def __lshift__(self, other):
-	${10:pass}
-
-def __rshift__(self, other):
-	${11:pass}
-
-def __and__(self, other):
-	${12:pass}
-
-def __xor__(self, other):
-	${13:pass}
-
-def __or__(self, other):
-	${14:pass}
-
-def __neg__(self):
-	${15:pass}
-
-def __pos__(self):
-	${16:self}
-
-def __abs__(self):
-	${17:pass}
-
-def __invert__(self):
-	${18:pass}
-
-def __complex__(self):
-	${19:pass}
-
-def __int__(self):
-	${20:pass}
-
-def __long__(self):
-	${21:pass}
-
-def __float__(self):
-	${22:pass}
-
-def __oct__(self):
-	${23:pass}
-
-def __hex__(self):
-	${24:pass}
-
-def __index__(self):
-	${25:pass}
-
-def __coerce__(self, other):
-	${26:pass}
-endsnippet
-
-snippet pdb "set PDB breakpoint" b
-import pdb; pdb.set_trace()
-endsnippet
-
-snippet ipdb "set IPDB breakpoint" b
-import ipdb; ipdb.set_trace()
-endsnippet
-
-snippet pudb "set PUDB breakpoint" b
-import pudb; pudb.set_trace()
-endsnippet
-
-snippet ae "assert equal" b
-self.assertEqual(${1:first},${2:second})
-endsnippet
-
-snippet at "assert True" b
-self.assertTrue(${0:exp})
-endsnippet
-
-snippet af "assert False" b
-self.assertFalse(${1:expression})
-endsnippet
-
-snippet aae "assert almost equal" b
-self.assertAlmostEqual(${1:first},${2:second})
-endsnippet
-
-snippet ar "assert raises" b
-self.assertRaises(${1:exception}, ${2:func}${3/.+/, /}${3:arguments})
-endsnippet
-
-snippet testcase "pyunit testcase" b
-class Test${1:Class}(${2:unittest.TestCase}):
-
-	`!p snip.rv = triple_quotes(snip)`${3:Test case docstring.}`!p snip.rv = triple_quotes(snip)`
-
-	def setUp(self):
-		${4:pass}
-
-	def tearDown(self):
-		${5:pass}
-
-	def test_${6:name}(self):
-		${7:pass}
+class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`}(${2:object}):
+	def __init__(self$3):`!p
+snip.rv = ''
+snip >> 2
+args = PyArg.get_args(t[3])
+write_init_body(args, snip)`$0
 endsnippet

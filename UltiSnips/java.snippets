@@ -1,44 +1,148 @@
 global !p
-def get_args(group):
-	import re
-	word = re.compile('[a-zA-Z><.]+ \w+')
-	return [i.split(" ") for i in word.findall(group) ]
 
-# FIXME(2014-07-30) This is just a placeholder for proper camel_case/snake_case
-# conversion functions.
-def camel_case(word):
-	if not word:
-		return ''
-	return word[0].upper() + word[1:]
+from arg import TypeArg
+import text
+
+def write_constructor_body(args, snip):
+	for arg in args:
+		snip += 'this.' + '{0} = {0}'.format(arg.name).strip() + ';'
+
+def write_members(args, snip):
+	if len(args) > 0:
+		snip += ''
+	for arg in args:
+		snip += 'private ' +  '{0} {1}'.format(arg.type, arg.name).strip() + ';'
+	if len(args) > 0:
+		snip += ''
+
+def write_getter(arg, snip):
+	snip += ''
+	snip += 'public ' \
+		+ '{0} {1}'.format(arg.type, text.to_camel('get_' + arg.name)).strip() \
+		+ '() {'
+	snip >> 1
+	snip += 'return this.' + '{0}'.format(arg.name).strip() + ';'
+	snip << 1
+	snip += '}'
+
+def write_setter(arg, snip):
+	snip += ''
+	snip += 'public void ' \
+		+ '{0}({1} {2}'.format(text.to_camel('set_' + arg.name), arg.type, arg.name).strip() \
+		+ ') {'
+	snip >> 1
+	snip += 'this.' + '{0} = {0}'.format(arg.name).strip() + ';'
+	snip << 1
+	snip += '}'
+
 endglobal
 
-# TODO(2014-07-30) Convert names to CamelCase.
-# TODO(2014-07-30) Use new Args class.
-# TODO(2014-07-30) Add documentation.
-snippet cl "class" b
-${1:public} class `!p
-snip.rv = snip.basename or "untitled"`${2: extends ${3:Class}}${4: implements ${5:Interface}} {`!p
-args = get_args(t[6])
-if len(args) == 0: snip.rv = ""
-for i in args:
-	snip.rv += "\n\tprivate " + i[0] + " " + i[1]+ ";"
-if len(args) > 0:
-	snip.rv += "\n"`
-	public `!p snip.rv = snip.basename or "unknown"`($6) { `!p
-args = get_args(t[6])
-for i in args:
-	snip.rv += "\n\t\tthis." + i[1] + " = " + i[1] + ";"
-if len(args) == 0:
-	snip.rv += "\n"`
-	}$0
-`!p
-args = get_args(t[6])
-if len(args) == 0: snip.rv = ""
-for i in args:
-	snip.rv += "\n\tpublic void set" + camel_case(i[1]) + "(" + i[0] + " " + i[1] + ") {\n" + "\
-	\tthis." + i[1] + " = " + i[1] + ";\n\t}\n"
+snippet cl "class .."
+${2:public} class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`} {`!p
+snip >> 1
+snip.rv = ''
+args = TypeArg.get_args(t[3])
+write_members(args, snip)`
+	public $1($3) {`!p
+snip.rv = ''
+snip >> 2
+args = TypeArg.get_args(t[3])
+write_constructor_body(args, snip)`$0
+	}`!p
+snip >> 1
+snip.rv = ''
+for arg in args:
+	write_getters(args, snip)
+	write_setters(args, snip)`
+}
+endsnippet
 
-	snip.rv += "\n\tpublic " + i[0] + " get" + camel_case(i[1]) + "() {\n\t\treturn " + i[1] + ";\n\t}\n"
-`
+snippet main "main" b
+public static void main(String[] args) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet met "method .."
+${2:public} ${3:void} $1($4) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet enum "enum .."
+${2:public} enum $1 {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet if "if .."
+if ($1) {
+	${VISUAL}$2
+}
+endsnippet
+
+snippet ife "if .. else .."
+if ($1) {
+	${VISUAL}$2
+} else {
+	$3
+}
+endsnippet
+
+snippet ifee "if .. else if .. else"
+if ($1) {
+	${VISUAL}$2
+} else if ($3) {
+	$4
+} else {
+	$5
+}
+endsnippet
+
+snippet sw "switch .."
+switch ($1) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet for "for .. ; .. ; .."
+for (${1:int} ${2:i} = ${3:0}; $2 < $4; ${5:++$2}) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet fore "for .. : .."
+for ($1 : $2) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet wh "while .."
+while ($1) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet do "do .. while .."
+do {
+	${VISUAL}$0
+} while ($1);
+endsnippet
+
+snippet try "try .."
+try {
+	${VISUAL}$1
+} catch ($2) {
+	$3
+}
+endsnippet
+
+snippet tryf "try .. catch .. finally"
+try {
+	${VISUAL}$1
+} catch ($2) {
+	$3
+} finally {
+	$4
 }
 endsnippet
