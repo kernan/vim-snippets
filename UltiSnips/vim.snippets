@@ -1,5 +1,5 @@
 snippet once "reload guard" b
-if exists('g:${1:did_`!p snip.rv = snip.fn.replace('.','_')`}') || &cp${2: || version < 700}
+if exists('g:${1:loaded_`!p snip.rv = snip.basename`}') || &cp${2: || version < 700}
 	finish
 endif
 let $1 = 1$0
@@ -7,36 +7,46 @@ endsnippet
 
 snippet gvar "if !exists(<var>) .. endif" b
 if !exists('g:${1}')
-	let g:$1 = ${2:'${3}'}
+	let g:$1 = ${2:'$3'}
 endif
 endsnippet
 
-snippet if "if .. endif"
-if ${1}
+snippet fun "function .. endfunction" b
+function! $1($2)
 	${VISUAL}$0
+endfunction
+endsnippet
+
+snippet if "if .. endif"
+if $1
+	${VISUAL}$2
 endif
 endsnippet
 
 snippet ife "if .. else .. endif" b
-if ${1}
-	${VISUAL}${2}
+if $1
+	${VISUAL}$2
 else
-	$0
+	$3
 endif
 endsnippet
 
 snippet ifee "if .. elseif .. else .. endif" b
 if ${1}
-	${VISUAL}${2}
-elseif ${3}
-	${4}
+	${VISUAL}$2
+elseif $3
+	$4
 else
-	$0
+	$5
 endif
 endsnippet
 
-snippet fun "function .. endfunction" b
-function! ${1}(${2})
-	${VISUAL}$0
-endfunction
+snippet eli "else if .." b
+elseif $1
+	$2
+endsnippet
+
+snippet el "else .." b
+else
+	$1
 endsnippet
