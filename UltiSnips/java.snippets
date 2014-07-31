@@ -62,8 +62,8 @@ write_constructor_body(args, snip)`$0
 snip >> 1
 snip.rv = ''
 for arg in args:
-	write_getter(args, snip)
-	write_setter(args, snip)`
+	write_getter(arg, snip)
+	write_setter(arg, snip)`
 }
 endsnippet
 
