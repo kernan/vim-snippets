@@ -1,0 +1,16 @@
+extends ruby
+
+priority -49
+
+snippet task "desc .. task .. do .. end" b
+desc "$1"
+task $2 do
+	${VISUAL}$0
+end
+endsnippet
+
+snippet ns "namespace .. do .. end" b
+namespace $1 do
+	${VISUAL}$0
+end
+endsnippet
