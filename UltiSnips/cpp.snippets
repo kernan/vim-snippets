@@ -1,6 +1,6 @@
 extends c
 
-priority 49
+priority -49
 
 global !p
 
@@ -64,17 +64,7 @@ def write_setter(arg, snip):
 
 endglobal
 
-snippet cl "class .." b
-class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`} {
-public:
-	$1(${2:void});
-	virtual ~$1(void) = default;
-private:
-	$0
-}
-endsnippet
-
-snippet clc "class .. (automated)" b
+snippet cl "class .."
 class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`} {
 public:
 	$1(${2:void});
@@ -92,8 +82,20 @@ write_members(args, snip)`$0
 };
 endsnippet
 
+snippet enum "enum class .." !
+enum class ${1} {
+	${VISUAL}$0
+};
+endsnippet
+
 snippet met "class::method"
 ${3:void} ${1}::${2}(${4:void}) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet fore "for each"
+for (${1:auto}& ${2} : ${3}) {
 	${VISUAL}$0
 }
 endsnippet
@@ -107,15 +109,5 @@ namespace ${1:`!p snip.rv = (snip.basename or "unnamed")`} {
 
 ${VISUAL}$0
 
-}
-endsnippet
-
-snippet enumc "enum class .."
-enum class ${1} { $0 };
-endsnippet
-
-snippet fore "for each"
-for (${1:auto}& ${2} : ${3}) {
-	${VISUAL}$0
 }
 endsnippet

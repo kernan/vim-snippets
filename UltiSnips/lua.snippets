@@ -1,6 +1,24 @@
-snippet "^#!" "shebang header" br
+snippet #! "shebang header" b
 #!/usr/bin/env lua
 $0
+endsnippet
+
+snippet req "require .." b
+require $1
+endsnippet
+
+snippet lreq "local .. = require .." b
+local $1 = require "$2"
+endsnippet
+
+snippet var "<varname> = <value>" b
+${3:local }$1 = $2
+endsnippet
+
+snippet fun "function .. end" b
+${3:local }function $1($2)
+	${VISUAL}$0
+end
 endsnippet
 
 snippet if "if .. end" b
@@ -27,14 +45,26 @@ else
 end
 endsnippet
 
-snippet var "<varname> = <value>" b
-${1:local }$2 = $3
+snippet eli "elseif .." b
+elseif $1 then
+	$2
 endsnippet
 
-snippet fun "function .. end" b
-${1:local }function $2($3)
+snippet el "else .." b
+else
+	$1
+endsnippet
+
+snippet wh "while .. do .. end" b
+while $1 do
 	${VISUAL}$0
 end
+endsnippet
+
+snippet rep "repeat .. until .." b
+repeat
+	${VISUAL}$0
+ultil $1
 endsnippet
 
 snippet for "for .. do .. end"
@@ -53,16 +83,4 @@ snippet fori "for .. in ipairs(..) do .. end" b
 for ${1:name}, ${2:val} in ipairs(${3:table_name}) do
 	${VISUAL}$0
 end
-endsnippet
-
-snippet wh "while .. do .. end" b
-while $1 do
-	${VISUAL}$0
-end
-endsnippet
-
-snippet rep "repeat .. until .." b
-repeat
-	${VISUAL}$0
-ultil $1
 endsnippet

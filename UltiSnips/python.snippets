@@ -20,12 +20,12 @@ def write_init_body(args, snip):
 
 endglobal
 
-snippet "^#!" "shebang header" br
+snippet #! "shebang header" b
 #!/usr/bin/env python
 $0
 endsnippet
 
-snippet ifmain "if main" b
+snippet main "if main" b
 if __name__ == '__main__':
 	${0:${VISUAL:pass}}
 endsnippet
@@ -38,17 +38,19 @@ snippet from "from .. import .." b
 from $1 import $2
 endsnippet
 
-snippet wh "while .." b
-while $1:
-	${0:${VISUAL:pass}}
+snippet cl "class .." b
+class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`}(${2:object}):
+	def __init__(self$3):`!p
+snip.rv = ''
+snip >> 2
+args = PyArg.get_args(t[3])
+write_init_body(args, snip)`$0
 endsnippet
 
-snippet For "[.. for .. in ..]"
-[$1 for $2 in $3]
-endsnippet
-
-snippet for "for .." b
-for $1 in $2:
+snippet def "def ..(..) .." b
+def $1(`!p
+if snip.indent:
+	snip.rv = 'self' + (', ' if len(t[2]) else '')`${2}):
 	${0:${VISUAL:pass}}
 endsnippet
 
@@ -71,6 +73,30 @@ elif $2:
 	${4:pass}
 else:
 	${5:pass}
+endsnippet
+
+snippet eli "elif .." b
+elif $1:
+	${2:pass}
+endsnippet
+
+snippet el "else .." b
+else:
+	${1:pass}
+endsnippet
+
+snippet wh "while .." b
+while $1:
+	${0:${VISUAL:pass}}
+endsnippet
+
+snippet For "[.. for .. in ..]"
+[$1 for $2 in $3]
+endsnippet
+
+snippet for "for .." b
+for $1 in $2:
+	${0:${VISUAL:pass}}
 endsnippet
 
 snippet try "try .. except" b
@@ -98,20 +124,4 @@ else:
 	${6:pass}
 finally:
 	${7:pass}
-endsnippet
-
-snippet def "def ..(..) .." b
-def $1(`!p
-if snip.indent:
-	snip.rv = 'self' + (', ' if len(t[2]) else '')`${2}):
-	${0:${VISUAL:pass}}
-endsnippet
-
-snippet cl "class .." b
-class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`}(${2:object}):
-	def __init__(self$3):`!p
-snip.rv = ''
-snip >> 2
-args = PyArg.get_args(t[3])
-write_init_body(args, snip)`$0
 endsnippet

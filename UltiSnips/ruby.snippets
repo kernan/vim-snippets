@@ -11,9 +11,33 @@ def write_initialize_body(args, snip):
 
 endglobal
 
-snippet "^#!" "shebang header" br
+snippet #! "shebang header" b
 #!/usr/bin/env ruby
 $0
+endsnippet
+
+snippet inc "include .." b
+include $1
+endsnippet
+
+snippet req "require .." b
+require '$1'
+endsnippet
+
+snippet cl "class .."
+class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`}
+	def initialize($2)`!p
+snip >> 2
+args = Arg.get_args(t[2])
+write_initialize_body(args, snip)`
+	end$0
+end
+endsnippet
+
+snippet def "def function .." b
+def $1${2:($3)}
+	${VISUAL}$0
+end
 endsnippet
 
 snippet If ".. if .."
@@ -48,6 +72,16 @@ else
 end
 endsnippet
 
+snippet eli "elsif .." b
+elsif $1
+	$2
+endsnippet
+
+snippet el "else .." b
+else
+	$1
+endsnippet
+
 snippet unl "unless .. end" b
 unless $1
 	${VISUAL}$2
@@ -72,12 +106,8 @@ else
 end
 endsnippet
 
-snippet For "(..).each { .. }"
-(${1:${2:from}..${3:to}}).each { |${4:i}| ${5} }
-endsnippet
-
-snippet for "(..).each do .. end"
-(${1:${2:from}..${3:to}}).each do |${4:i}|
+snippet wh "while .. end"
+while $1
 	${VISUAL}$0
 end
 endsnippet
@@ -94,24 +124,12 @@ until $1
 end
 endsnippet
 
-snippet wh "while .. end"
-while $1
-	${VISUAL}$0
-end
+snippet For "(..).each { .. }"
+(${1:${2:from}..${3:to}}).each { |${4:i}| ${5} }
 endsnippet
 
-snippet def "def function .." b
-def $1${2:($3)}
+snippet for "(..).each do .. end"
+(${1:${2:from}..${3:to}}).each do |${4:i}|
 	${VISUAL}$0
-end
-endsnippet
-
-snippet cl "class .."
-class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`}
-	def initialize($2)`!p
-snip >> 2
-args = Arg.get_args(t[2])
-write_initialize_body(args, snip)`
-	end$0
 end
 endsnippet

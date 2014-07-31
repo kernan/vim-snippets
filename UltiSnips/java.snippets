@@ -37,6 +37,16 @@ def write_setter(arg, snip):
 
 endglobal
 
+snippet main "main" b
+public static void main(String[] args) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet im "import .."
+import $1;
+endsnippet
+
 snippet cl "class .."
 ${2:public} class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`} {`!p
 snip >> 1
@@ -57,20 +67,14 @@ for arg in args:
 }
 endsnippet
 
-snippet main "main" b
-public static void main(String[] args) {
+snippet enum "enum .."
+${2:public} enum $1 {
 	${VISUAL}$0
 }
 endsnippet
 
 snippet met "method .."
 ${2:public} ${3:void} $1($4) {
-	${VISUAL}$0
-}
-endsnippet
-
-snippet enum "enum .."
-${2:public} enum $1 {
 	${VISUAL}$0
 }
 endsnippet
@@ -99,20 +103,20 @@ if ($1) {
 }
 endsnippet
 
+snippet eli "else if .."
+else if ($1) {
+	$2
+}
+endsnippet
+
+snippet el "else .."
+else {
+	$1
+}
+endsnippet
+
 snippet sw "switch .."
 switch ($1) {
-	${VISUAL}$0
-}
-endsnippet
-
-snippet for "for .. ; .. ; .."
-for (${1:int} ${2:i} = ${3:0}; $2 < $4; ${5:++$2}) {
-	${VISUAL}$0
-}
-endsnippet
-
-snippet fore "for .. : .."
-for ($1 : $2) {
 	${VISUAL}$0
 }
 endsnippet
@@ -127,6 +131,18 @@ snippet do "do .. while .."
 do {
 	${VISUAL}$0
 } while ($1);
+endsnippet
+
+snippet for "for .. ; .. ; .."
+for (${1:int} ${2:i} = ${3:0}; $2 < $4; ${5:++$2}) {
+	${VISUAL}$0
+}
+endsnippet
+
+snippet fore "for .. : .."
+for ($1 : $2) {
+	${VISUAL}$0
+}
 endsnippet
 
 snippet try "try .."
