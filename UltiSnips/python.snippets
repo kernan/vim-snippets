@@ -50,7 +50,7 @@ endsnippet
 snippet def "def ..(..) .." b
 def $1(`!p
 if snip.indent:
-	snip.rv = 'self' + (', ' if len(t[2]) else '')`${2}):
+	snip.rv = 'self'`${2}):
 	${0:${VISUAL:pass}}
 endsnippet
 
