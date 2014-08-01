@@ -1,7 +1,7 @@
 priority -50
 
 snippet once "header guard" b
-#ifndef ${1:`!p snip.rv = snip.fn.replace(".", "_").upper()`}
+#ifndef ${1:`!p import text; snip.rv = text.to_CAPITALS_CASE(snip.fn.replace(".", "_"))`}
 #define $1
 
 ${VISUAL}$0

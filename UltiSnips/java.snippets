@@ -18,7 +18,7 @@ def write_members(args, snip):
 def write_getter(arg, snip):
 	snip += ''
 	snip += 'public ' \
-		+ '{0} {1}'.format(arg.type, text.to_camel('get_' + arg.name)).strip() \
+		+ '{0} {1}'.format(arg.type, text.to_camel_case('get_' + arg.name)).strip() \
 		+ '() {'
 	snip >> 1
 	snip += 'return this.' + '{0}'.format(arg.name).strip() + ';'
@@ -28,7 +28,7 @@ def write_getter(arg, snip):
 def write_setter(arg, snip):
 	snip += ''
 	snip += 'public void ' \
-		+ '{0}({1} {2}'.format(text.to_camel('set_' + arg.name), arg.type, arg.name).strip() \
+		+ '{0}({1} {2}'.format(text.to_camel_case('set_' + arg.name), arg.type, arg.name).strip() \
 		+ ') {'
 	snip >> 1
 	snip += 'this.' + '{0} = {0}'.format(arg.name).strip() + ';'
@@ -48,7 +48,7 @@ import $1;
 endsnippet
 
 snippet cl "class .."
-${2:public} class ${1:`!p snip.rv = text.to_camel(snip.basename, True) or 'Unnamed'`} {`!p
+${2:public} class ${1:`!p snip.rv = text.to_pascal_case(snip.basename) or 'Unnamed'`} {`!p
 snip >> 1
 snip.rv = ''
 args = TypeArg.get_args(t[3])
