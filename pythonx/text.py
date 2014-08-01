@@ -7,7 +7,7 @@ def to_camel_case(s):
     return re.sub(r'(?!^)_([a-zA-Z])', lambda m: m.group(1).upper(), s)
 
 def to_pascal_case(s):
-    s = to_camelCase(s);
+    s = to_camel_case(s);
     return s[0].upper() + s[1:]
 
 

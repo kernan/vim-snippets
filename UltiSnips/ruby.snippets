@@ -3,7 +3,6 @@ priority -50
 global !p
 
 from arg import Arg
-import text
 
 def write_initialize_body(args, snip):
 	for arg in args:
@@ -25,7 +24,7 @@ require '$1'
 endsnippet
 
 snippet cl "class .."
-class ${1:`!p snip.rv = text.to_pascal_case(snip.basename) or 'Unnamed'`}
+class ${1:`!p import text; snip.rv = text.to_pascal_case(snip.basename) or 'Unnamed'`}
 	def initialize($2)`!p
 snip >> 2
 args = Arg.get_args(t[2])

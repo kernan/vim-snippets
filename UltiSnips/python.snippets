@@ -1,7 +1,6 @@
 global !p
 
 from arg import Arg
-import text
 
 class PyArg(Arg):
 	def __init__(self, arg):
@@ -39,7 +38,7 @@ from $1 import $2
 endsnippet
 
 snippet cl "class .." b
-class ${1:`!p snip.rv = text.to_pascal_case(snip.basename) or 'Unnamed'`}(${2:object}):
+class ${1:`!p import text; snip.rv = text.to_pascal_case(snip.basename) or 'Unnamed'`}(${2:object}):
 	def __init__(self$3):`!p
 snip.rv = ''
 snip >> 2

@@ -105,7 +105,7 @@ template<${1:typename} ${2}>
 endsnippet
 
 snippet ns "namespace .."
-namespace ${1:`!p snip.rv = to_camel_case(snip.basename or "unnamed")`} {
+namespace ${1:`!p snip.rv = text.to_camel_case(snip.basename or "unnamed")`} {
 
 ${VISUAL}$0
 
